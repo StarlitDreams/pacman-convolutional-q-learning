@@ -1,4 +1,7 @@
-# Atari Deep Q-Learning with PyTorch
+
+![DALL·E 2024-09-18 22 05 26 - A retro 8-bit style background in landscape orientation featuring vibrant pixelated elements like clouds, mountains, and stars  The background uses a_ smaller](https://github.com/user-attachments/assets/15736ac3-7ab5-4224-b0bb-f3bb4ac789c7)
+
+## Introduction
 
 This project implements a Deep Q-Network (DQN) to train an agent to play Atari's *Ms. Pac-Man* using PyTorch and the Gymnasium environment. The agent uses a convolutional neural network (CNN) to process image frames from the game and decide on actions using reinforcement learning principles.
 
