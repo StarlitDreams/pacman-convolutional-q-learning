@@ -59,10 +59,14 @@ After running `show_video.py`, a video will be created and displayed using the I
 ## Project Structure
 
 ```
+├── .gitattributes     # Git configuration file for handling file types
+├── LICENSE            # License file for the project (e.g., MIT License)
+├── README.md          # Project documentation (this file)
+├── checkpoint.pth     # Saved model weights after training
 ├── main.py            # The main script to train the agent
-├── show_video.py      # The script to load a trained model and display gameplay
 ├── requirements.txt   # Python dependencies
-└── README.md          # Project documentation
+├── show_video.py      # The script to load a trained model and display gameplay
+├── video.mp4          # Generated video of the trained agent playing Ms. Pac-Man
 ```
 
 ## Hyperparameters
@@ -87,7 +91,7 @@ After running `show_video.py`, a video will be created and displayed using the I
 
 ## Sample Output
 
-Below is an example of the output image generated during the training process:
+Below is an example of the output video after the training process is completed:
 
 
 
