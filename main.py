@@ -8,9 +8,13 @@ import torch.nn.functional as F
 from collections import deque
 from torchvision import transforms
 from PIL import Image
-import gymnasium as gym
 import imageio
-
+import gymnasium as gym
+import glob
+import io
+import base64
+from IPython.display import HTML, display
+from gymnasium.wrappers.monitoring.video_recorder import VideoRecorder
 
 seed = 42
 random.seed(seed)
@@ -47,14 +51,14 @@ def preprocess_frame(frame):
 
 class Agent:
     def __init__(self, action_size):
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cuda:0")
         self.action_size = action_size
         self.local_qnetwork = Network(action_size).to(self.device)
         self.target_qnetwork = Network(action_size).to(self.device)
         self.optimizer = optim.Adam(self.local_qnetwork.parameters(), lr=1e-4)
         self.memory = deque(maxlen=int(1e5))
         self.criterion = nn.SmoothL1Loss()
-        self.scaler = torch.cuda.amp.GradScaler()
+        self.scaler = torch.amp.GradScaler('cuda')
         self.t_step = 0
         self.tau = 1e-3
         self.update_every = 4   
@@ -145,23 +149,41 @@ for episode in range(1, number_episodes + 1):
     print(f'\rEpisode {episode} \tAverage Score: {np.mean(scores_deque):.2f}', end="")
     if episode % 100 == 0:
         print(f'\rEpisode {episode} \tAverage Score: {np.mean(scores_deque):.2f}')
-    if np.mean(scores_deque) >= 500.0:
+    if np.mean(scores_deque) >= 2600.0:
         print(f'\nEnvironment solved in {episode - 100} episodes!\tAverage Score: {np.mean(scores_deque):.2f}')
         torch.save(agent.local_qnetwork.state_dict(), 'checkpoint.pth')
         break
 
+
 def show_video_of_model(agent, env_name):
     env = gym.make(env_name, render_mode='rgb_array')
-    state, _ = env.reset()
+    state, _ = env.reset(seed=seed)
     done = False
     frames = []
     while not done:
         frame = env.render()
         frames.append(frame)
         action = agent.act(state)
-        state, reward, terminated, truncated, _ = env.step(action)
+        next_state, reward, terminated, truncated, _ = env.step(action)
+        state = next_state
         done = terminated or truncated
     env.close()
-    imageio.mimsave('video.mp4', frames, fps=30)
+    # Save the video using h264_mf codec
+    imageio.mimsave('video.mp4', frames, fps=30, codec='h264_mf')
 
-show_video_of_model(agent, 'MsPacmanDeterministic-v0')
+# Function to display the video
+def show_video():
+    mp4list = glob.glob('video.mp4')
+    if len(mp4list) > 0:
+        mp4 = mp4list[0]
+        video = io.open(mp4, 'r+b').read()
+        encoded = base64.b64encode(video)
+        display(HTML(data='''
+            <video alt="test" autoplay loop controls style="height: 400px;">
+                <source src="data:video/mp4;base64,{0}" type="video/mp4" />
+            </video>'''.format(encoded.decode('ascii'))))
+    else:
+        print("Could not find video")
+
+# Run the agent and display the video
+show_video()

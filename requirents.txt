@@ -1,0 +1,7 @@
+numpy==1.23.5
+torch==2.0.1
+torchvision==0.15.2
+Pillow==9.5.0
+imageio==2.31.0
+gymnasium==0.28.1
+ipython==8.15.0
