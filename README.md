@@ -85,6 +85,12 @@ After running `show_video.py`, a video will be created and displayed using the I
 - ImageIO
 - IPython
 
+## Sample Output
+
+Below is an example of the output image generated during the training process:
+
+
+
 ## License
 
 This project is open-source and licensed under the MIT License.
